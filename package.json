@@ -1,0 +1,42 @@
+{
+  "name": "chat-app-users",
+  "version": "0.1.0",
+  "description": "The user profiles service for the chat application.",
+  "repository": "https://github.com/aegomez/chat-app-users.git",
+  "author": "Adrian Gomez",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "build-watch": "tsc -w",
+    "dev": "env-cmd node build/server.js",
+    "start": "node build/server.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "express-graphql": "^0.9.0",
+    "graphql": "^14.5.8",
+    "graphql-request": "^1.8.2",
+    "mongoose": "^5.7.13",
+    "morgan": "^1.9.1",
+    "ts-mongoose": "^0.0.21",
+    "validator": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.0.1",
+    "@types/express": "^4.17.2",
+    "@types/mongoose": "^5.5.32",
+    "@types/morgan": "^1.7.37",
+    "@types/validator": "^12.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "env-cmd": "^10.0.1",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.19.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
+  }
+}
