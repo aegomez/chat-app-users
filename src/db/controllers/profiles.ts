@@ -14,7 +14,7 @@ const profileDefaultProps: Pick<
 
 export async function createUserProfile(
   initProps: Pick<UserProps, '_id' | 'userName'>
-): Promise<boolean> {
+): Promise<UserDoc | null> {
   try {
     const avatar = await createIdenticon('noname' + initProps.userName);
     const result = await User.create({
@@ -23,10 +23,10 @@ export async function createUserProfile(
       avatar,
       publicName: initProps.userName
     });
-    return result !== null;
+    return result;
   } catch (error) {
     console.error(error);
-    return false;
+    return null;
   }
 }
 
