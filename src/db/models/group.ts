@@ -1,6 +1,6 @@
 import { createSchema, Type, typedModel, ExtractDoc } from 'ts-mongoose';
 
-import { UserSchema } from './user';
+import { PartialUserSchema } from './user';
 
 export const GroupSchema = createSchema({
   members: Type.array({ required: true }).of(
@@ -9,9 +9,10 @@ export const GroupSchema = createSchema({
         required: true,
         unique: true
       })
-    ).to('User', UserSchema)
+    ).to('User', PartialUserSchema)
   ),
-  conversation: Type.string({ required: true })
+  conversation: Type.string({ required: true }),
+  avatar: Type.string({ required: true })
 });
 
 export const Group = typedModel('Group', GroupSchema);

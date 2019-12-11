@@ -6,13 +6,28 @@ import {
   ExtractProps
 } from 'ts-mongoose';
 
+import { GroupSchema } from './group';
+
 const isRequired = { required: true as const };
 const locales = ['en', 'es', 'pt'] as const;
 const contactStatus = ['accepted', 'blocked', 'pending'] as const;
 
+// This schema contains only a part of the
+// user data, it is declared to avoid circular
+// and self-references.
+export const PartialUserSchema = createSchema({
+  // Public properties (visible to contacts
+  // and groups).
+  _id: Type.objectId(isRequired),
+  avatar: Type.string(isRequired),
+  connected: Type.boolean(isRequired),
+  publicName: Type.string(isRequired)
+});
+
+export type PartialUserProps = ExtractProps<typeof PartialUserSchema>;
+
 export const UserSchema = createSchema({
   // Private properties (client only)
-  _id: Type.objectId(isRequired),
   language: Type.string({ ...isRequired, enum: locales }),
 
   // Public properties (client + contacts)
@@ -28,16 +43,25 @@ export const UserSchema = createSchema({
 
   // ObjectId Arrays
   contacts: Type.array(isRequired).of({
-    ref: Type.string({
-      ...isRequired,
-      unique: true
-    }),
+    ref: Type.ref(
+      Type.objectId({
+        ...isRequired,
+        unique: true
+      })
+    ).to('User', PartialUserSchema),
     conversation: Type.string({ default: null }),
     // Contacts requests start as 'pending'
     // and can be accepted or blocked.
     status: Type.string({ ...isRequired, enum: contactStatus })
   }),
-  groups: Type.array(isRequired).of(Type.objectId(isRequired))
+  groups: Type.array(isRequired).of(
+    Type.ref(
+      Type.objectId({
+        ...isRequired,
+        unique: true
+      })
+    ).to('Group', GroupSchema)
+  )
 });
 
 export const User = typedModel('User', UserSchema);
