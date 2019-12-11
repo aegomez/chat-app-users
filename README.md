@@ -5,7 +5,9 @@ The user profiles service for the chat application. Source written in **TypeScri
 ## Before starting
 
 The following variables must be defined before running the application:
-- `MONGODB_URI`: it is a [MongoDB Connection String](https://docs.mongodb.com/manual/reference/connection-string/) that includes the username, password (if any), host, port and name of a pre-existing database.
+- `MONGODB_URI`: it is a [MongoDB Connection String](https://docs.mongodb.com/manual/reference/connection-string/) that includes the host, port number and name of a pre-existing database.
+- `MONGODB_USER`: the MongoDB username
+- `MONGODB_PASS`: the MongoDB password (these two were separated from the URI to avoid some parsing issues that can happen when using special characters in the password).
 - `PORT`: this is automatically assigned by some services (Heroku, etc.), so be careful before setting it (default 3000).
 
 ### Development mode

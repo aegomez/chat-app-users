@@ -17,7 +17,9 @@ export interface AsyncMiddleware<RT> {
 
 // The response type of verifyToken query
 export interface VerifyResponse {
-  valid: boolean;
-  _userId: string;
-  _userName: string;
+  verify: {
+    valid: boolean;
+    _userId: string;
+    _userName: string;
+  };
 }

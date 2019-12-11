@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 import { getUserById, getUserByName } from './profiles';
 
 export async function addContact(
@@ -56,7 +58,9 @@ export async function changeContactStatus(
     if (user === null) return false;
 
     // Look if contact is listed
-    const index = user.contacts.findIndex(contact => contact.ref === contactId);
+    const index = user.contacts.findIndex(
+      contact => contact.ref === Types.ObjectId(contactId)
+    );
     if (index === -1) return false;
 
     // Modify contact status
@@ -80,7 +84,9 @@ export async function deleteContact(
     if (user === null) return false;
 
     // Look for contact
-    const index = user.contacts.findIndex(contact => contact.ref === contactId);
+    const index = user.contacts.findIndex(
+      contact => contact.ref === Types.ObjectId(contactId)
+    );
     if (index === -1) return false;
 
     // Remove from own contacts

@@ -25,14 +25,20 @@ export const validateCookies: AsyncMiddleware<void> = async (
     if (!cookies.token) next();
 
     // Extract just the token value
-    const token = cookies.token.replace('Bearer%20', '');
+    const token = cookies.token.replace('Bearer ', '');
 
     // Call the auth server to verify token
-    const auth = await request<VerifyResponse>('api/auth', verifyTokenQuery, {
-      token
-    });
+    const response = await request<VerifyResponse>(
+      'http://localhost:2000/q',
+      verifyTokenQuery,
+      {
+        token
+      }
+    );
     // If response is bad:
-    if (!auth.valid) next('Auth server bad response');
+    if (!response?.verify?.valid) next('Auth server bad response');
+
+    const auth = response.verify;
 
     // If response is ok...
     if (auth.valid === false) {
