@@ -1,7 +1,9 @@
 import { getUserById } from './profiles';
 import { Group, GroupDoc } from '../models';
 
-export async function createNewGroup(userId: string): Promise<boolean> {
+export async function createNewGroup(
+  userId: string
+): Promise<{ id: string; conversation: string } | null> {
   try {
     /*
      * Create new conversation
@@ -10,10 +12,14 @@ export async function createNewGroup(userId: string): Promise<boolean> {
       members: [userId]
       // , conversation
     });
-    return result !== null;
+    if (!result) throw Error('Group not created');
+    return {
+      id: result.id,
+      conversation: result.conversation
+    };
   } catch (e) {
-    console.error('Error crateNewgroup', e);
-    return false;
+    console.error('Warning createNewgroup', e);
+    return null;
   }
 }
 
@@ -28,13 +34,13 @@ export async function addMemberToGroup(
   try {
     // Get the group document
     const group = await getGroupById(groupId);
-    if (group === null) return false;
+    if (group === null) throw Error('Could not fetch group.');
     // Get user document
     const user = await getUserById(userId, 'groups');
-    if (user === null) return false;
+    if (user === null) throw Error('Could not fetch user.');
 
     // Check if user is already in group
-    if (group.members.includes(user._id)) return false;
+    if (group.members.includes(user._id)) throw Error('User already in group!');
 
     // Save cross-reference
     group.members.push(user._id);
@@ -43,28 +49,28 @@ export async function addMemberToGroup(
     user.save();
     return true;
   } catch (e) {
-    console.error('Error getGroupById', e);
+    console.error('Warning addMemberToGroup', e);
     return false;
   }
 }
 
-export async function removeMemberFromGroup(
+export async function deleteMemberFromGroup(
   groupId: string,
   userId: string
 ): Promise<boolean> {
   try {
     // Get the group document
     const group = await getGroupById(groupId);
-    if (group === null) return false;
+    if (group === null) throw Error('Could not fetch group.');
     // Get user document
     const user = await getUserById(userId, 'groups');
-    if (user === null) return false;
+    if (user === null) throw Error('Could not fetch user.');
 
     // Search indexes
     const membersIndex = group.members.findIndex(id => id === user._id);
-    if (membersIndex === -1) return false;
+    if (membersIndex === -1) throw Error('User not in group.');
     const groupsIndex = user.groups.findIndex(id => id === group._id);
-    if (groupsIndex === -1) return false;
+    if (groupsIndex === -1) throw Error('Group not in user.');
 
     // Remove both references and save the documents
     group.members.splice(membersIndex, 1);
@@ -74,7 +80,23 @@ export async function removeMemberFromGroup(
 
     return true;
   } catch (e) {
-    console.error('Error getGroupById', e);
+    console.error('Warning deleteMemberFromGroup', e);
     return false;
+  }
+}
+
+export async function getGroupMembers(
+  groupId: string
+): Promise<string[] | null> {
+  try {
+    // Get the group document
+    const group = await Group.findById(groupId).populateTs('members');
+    if (!group) throw Error('Could not fetch group');
+    // Return array of names
+    const nameList = group.members.map(user => user.publicName);
+    return nameList;
+  } catch (e) {
+    console.error('Warning getGroupMembers: ', e);
+    return null;
   }
 }
