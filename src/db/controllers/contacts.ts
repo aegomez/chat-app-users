@@ -1,23 +1,24 @@
 import { Types } from 'mongoose';
 
 import { getUserById, getUserByName } from './profiles';
+import { PartialUserProps } from '../models';
 
 export async function addContact(
   userId: string,
   contactName: string
-): Promise<boolean> {
+): Promise<PartialUserProps | null> {
   try {
     // Get sender
     const sender = await getUserById(userId, 'contacts');
-    if (sender === null) return false;
+    if (sender === null) throw Error('sender not found.');
 
     // Check if recipient exists
     const recipient = await getUserByName(contactName);
-    if (recipient === null) return false;
+    if (recipient === null) throw Error('recipient not found.');
 
     // Return if the recipient is already in contacts
     const added = sender.contacts.some(contact => contact.ref === recipient.id);
-    if (added) return false;
+    if (added) throw Error('contact already added.');
 
     /**
      * createNewConversation()
@@ -39,11 +40,16 @@ export async function addContact(
     });
     await recipient.save();
 
-    return true;
+    return {
+      _id: recipient.id,
+      avatar: recipient.avatar,
+      connected: recipient.connected,
+      publicName: recipient.publicName
+    };
     // Search if the destinatary exist and add petition
   } catch (e) {
-    console.error('Error: addContact', e);
-    return false;
+    console.error('addContact: ', e);
+    return null;
   }
 }
 

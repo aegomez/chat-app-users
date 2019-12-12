@@ -16,7 +16,7 @@ const verifyTokenQuery = /* GraphQL */ `
 
 export const validateCookies: AsyncMiddleware<void> = async (
   req,
-  _res,
+  res,
   next
 ) => {
   try {
@@ -29,29 +29,33 @@ export const validateCookies: AsyncMiddleware<void> = async (
 
     // Call the auth server to verify token
     const response = await request<VerifyResponse>(
-      'http://localhost:2000/q',
+      process.env.AUTH_API_URI || '',
       verifyTokenQuery,
       {
         token
       }
     );
     // If response is bad:
-    if (!response?.verify?.valid) next('Auth server bad response');
+    if (!response || !response.verify) {
+      throw Error('Auth server bad response');
+    }
 
     const auth = response.verify;
 
     // If response is ok...
     if (auth.valid === false) {
       // ...but token is not valid
-      req._userId = 'NOT_AUTHORIZED';
+      throw Error('Token not valid.');
     } else {
       // ...and token is valid
       req._userId = auth._userId;
       req._userName = auth._userName;
+      next();
     }
-    next();
   } catch (e) {
-    console.error('Error validateCookiesAsync', e);
-    next();
+    console.error('Error validateCookies: ', e);
+    res.status(200).send({
+      data: { error: 'NOT_AUTHORIZED' }
+    });
   }
 };

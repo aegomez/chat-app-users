@@ -5,7 +5,7 @@ import graphqlHTTP from 'express-graphql';
 
 import { connect } from './db/connection';
 import { asyncMiddleware, validateCookies } from './utils';
-import { usersSchema } from './graphql';
+import { usersSchema } from './graphql/schema';
 
 const PORT = process.env.PORT || 3000;
 

@@ -24,7 +24,10 @@ export const PartialUserSchema = createSchema({
   publicName: Type.string(isRequired)
 });
 
-export type PartialUserProps = ExtractProps<typeof PartialUserSchema>;
+export type PartialUserProps = Omit<
+  ExtractProps<typeof PartialUserSchema>,
+  '__v'
+>;
 
 export const UserSchema = createSchema({
   // Private properties (client only)

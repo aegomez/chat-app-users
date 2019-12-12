@@ -15,8 +15,8 @@ export async function createIdenticon(value: string): Promise<string> {
       folder: 'profiles'
     });
     // Return image public_id
-    if (response?.public_id) {
-      return response.public_id as string;
+    if (response?.url) {
+      return response.url as string;
     } else {
       throw Error('Cloud error, returning default.');
     }
