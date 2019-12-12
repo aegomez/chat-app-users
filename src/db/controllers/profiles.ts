@@ -25,7 +25,7 @@ export async function createUserProfile(
     });
     return result;
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     return null;
   }
 }

@@ -23,7 +23,7 @@ app.use(asyncMiddleware(validateCookies));
 connect()
   .then(() => console.log('Succesfully connected to DB.'))
   .catch(error => {
-    console.error('Could not connect to database', error);
+    console.error('Could not connect to database', error.message);
   });
 
 // GraphQL route

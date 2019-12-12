@@ -7,12 +7,12 @@ export async function changeUserAvatar(
 ): Promise<boolean> {
   try {
     const user = await getUserById(userId, 'avatar');
-    if (user === null) return false;
+    if (user === null) throw Error('could not fetch user.');
     user.avatar = url;
     await user.save();
     return true;
   } catch (e) {
-    console.error('Error changeUserAvatar', e);
+    console.error('Error changeUserAvatar', e.message);
     return false;
   }
 }
@@ -23,12 +23,12 @@ export async function changeUserLanguage(
 ): Promise<boolean> {
   try {
     const user = await getUserById(userId, 'language');
-    if (user === null) return false;
+    if (user === null) throw Error('could not fetch user.');
     user.language = newLanguage;
     await user.save();
     return true;
   } catch (e) {
-    console.error('Error changeUserLanguage', e);
+    console.error('Error changeUserLanguage', e.message);
     return false;
   }
 }
@@ -40,12 +40,12 @@ export async function changeUserPublicName(
   try {
     if (newName.length > 40) return false;
     const user = await getUserById(userId, 'newName');
-    if (user === null) return false;
+    if (user === null) throw Error('could not fetch user.');
     user.publicName = newName;
     await user.save();
     return true;
   } catch (e) {
-    console.error('Error changeUserPublicName', e);
+    console.error('Error changeUserPublicName', e.message);
     return false;
   }
 }

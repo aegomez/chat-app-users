@@ -48,7 +48,7 @@ export const userProfileResolver: CustomResolver<{
       }
     };
   } catch (e) {
-    console.error('Warning userProfileResolver', e);
+    console.error('Warning userProfileResolver', e.message);
     return {
       profile: null,
       success: false

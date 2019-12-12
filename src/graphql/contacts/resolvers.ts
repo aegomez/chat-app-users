@@ -14,8 +14,8 @@ export const addContactResolver: CustomResolver<
     const { _userId } = context;
     const { contactName } = args;
 
-    if (!contactName || contactName.length < 5 || contactName.length > 100) {
-      throw Error('Invalid contactName');
+    if (!contactName || contactName.length > 40) {
+      throw Error('Invalid contact name');
     }
 
     const contact = await addContact(_userId, contactName);
@@ -28,7 +28,7 @@ export const addContactResolver: CustomResolver<
       };
     }
   } catch (e) {
-    console.error('Warning addContactResolver: ', e);
+    console.error('Warning addContactResolver: ', e.message);
     return {
       success: false,
       profile: null
@@ -54,7 +54,7 @@ export const updateContactResolver: CustomResolver<
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning updateContactResolver: ', e);
+    console.error('Warning updateContactResolver: ', e.message);
     return { success: false };
   }
 };
@@ -75,7 +75,7 @@ export const deleteContactResolver: InputResolver = async (
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning deleteContactResolver: ', e);
+    console.error('Warning deleteContactResolver: ', e.message);
     return { success: false };
   }
 };

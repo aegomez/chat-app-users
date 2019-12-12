@@ -22,7 +22,9 @@ export const validateCookies: AsyncMiddleware<void> = async (
   try {
     const cookies = parse(req.headers.cookie || '');
     // If the cookie does not even exist:
-    if (!cookies.token) next();
+    if (!cookies.token) {
+      throw Error('Could not parse cookies');
+    }
 
     // Extract just the token value
     const token = cookies.token.replace('Bearer ', '');
@@ -53,7 +55,7 @@ export const validateCookies: AsyncMiddleware<void> = async (
       next();
     }
   } catch (e) {
-    console.error('Error validateCookies: ', e);
+    console.error('Error validateCookies: ', e.message);
     res.status(200).send({
       data: { error: 'NOT_AUTHORIZED' }
     });

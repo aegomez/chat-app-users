@@ -20,7 +20,7 @@ export const updateAvatarResolver: InputResolver = async (
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning updateAvatarResolver: ', e);
+    console.error('Warning updateAvatarResolver: ', e.message);
     return { success: false };
   }
 };
@@ -39,7 +39,7 @@ export const updateLanguageResolver: CustomResolver<
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning updateLanguageResolver: ', e);
+    console.error('Warning updateLanguageResolver: ', e.message);
     return { success: false };
   }
 };
@@ -58,7 +58,7 @@ export const updatePublicNameResolver: InputResolver = async (
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning updatePublicNameResolver: ', e);
+    console.error('Warning updatePublicNameResolver: ', e.message);
     return { success: false };
   }
 };

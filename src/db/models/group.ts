@@ -6,8 +6,7 @@ export const GroupSchema = createSchema({
   members: Type.array({ required: true }).of(
     Type.ref(
       Type.objectId({
-        required: true,
-        unique: true
+        required: true
       })
     ).to('User', PartialUserSchema)
   ),

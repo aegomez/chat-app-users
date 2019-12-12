@@ -18,7 +18,7 @@ export async function createNewGroup(
       conversation: result.conversation
     };
   } catch (e) {
-    console.error('Warning createNewgroup', e);
+    console.error('Warning createNewgroup', e.message);
     return null;
   }
 }
@@ -49,7 +49,7 @@ export async function addMemberToGroup(
     user.save();
     return true;
   } catch (e) {
-    console.error('Warning addMemberToGroup', e);
+    console.error('Warning addMemberToGroup', e.message);
     return false;
   }
 }
@@ -80,7 +80,7 @@ export async function deleteMemberFromGroup(
 
     return true;
   } catch (e) {
-    console.error('Warning deleteMemberFromGroup', e);
+    console.error('Warning deleteMemberFromGroup', e.message);
     return false;
   }
 }
@@ -96,7 +96,7 @@ export async function getGroupMembers(
     const nameList = group.members.map(user => user.publicName);
     return nameList;
   } catch (e) {
-    console.error('Warning getGroupMembers: ', e);
+    console.error('Warning getGroupMembers: ', e.message);
     return null;
   }
 }

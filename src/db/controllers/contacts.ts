@@ -1,5 +1,3 @@
-import { Types } from 'mongoose';
-
 import { getUserById, getUserByName } from './profiles';
 import { PartialUserProps } from '../models';
 
@@ -48,7 +46,7 @@ export async function addContact(
     };
     // Search if the destinatary exist and add petition
   } catch (e) {
-    console.error('addContact: ', e);
+    console.error('addContact: ', e.message);
     return null;
   }
 }
@@ -61,13 +59,13 @@ export async function changeContactStatus(
   try {
     // Get user
     const user = await getUserById(userId, 'contacts');
-    if (user === null) return false;
+    if (user === null) throw Error('Could not fetch user.');
 
     // Look if contact is listed
     const index = user.contacts.findIndex(
-      contact => contact.ref === Types.ObjectId(contactId)
+      contact => contact.ref.toString() === contactId
     );
-    if (index === -1) return false;
+    if (index === -1) throw Error('Contact not in list.');
 
     // Modify contact status
     user.contacts[index].status = status;
@@ -75,7 +73,7 @@ export async function changeContactStatus(
 
     return saved !== null;
   } catch (e) {
-    console.error('Error: changeContactStatus', e);
+    console.error('Error: changeContactStatus', e.message);
     return false;
   }
 }
@@ -87,13 +85,14 @@ export async function deleteContact(
   try {
     // Get user
     const user = await getUserById(userId, 'contacts');
-    if (user === null) return false;
+    if (user === null) throw Error('Could not fetch user.');
+    console.log(user);
 
     // Look for contact
     const index = user.contacts.findIndex(
-      contact => contact.ref === Types.ObjectId(contactId)
+      contact => contact.ref.toString() === contactId
     );
-    if (index === -1) return false;
+    if (index === -1) throw Error('Contact not in list.');
 
     // Remove from own contacts
     user.contacts.splice(index, 1);
@@ -101,7 +100,7 @@ export async function deleteContact(
 
     return saved !== null;
   } catch (e) {
-    console.error('Error: deleteContact', e);
+    console.error('Error: deleteContact', e.message);
     return false;
   }
 }

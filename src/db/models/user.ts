@@ -46,24 +46,14 @@ export const UserSchema = createSchema({
 
   // ObjectId Arrays
   contacts: Type.array(isRequired).of({
-    ref: Type.ref(
-      Type.objectId({
-        ...isRequired,
-        unique: true
-      })
-    ).to('User', PartialUserSchema),
+    ref: Type.ref(Type.objectId(isRequired)).to('User', PartialUserSchema),
     conversation: Type.string({ default: null }),
     // Contacts requests start as 'pending'
     // and can be accepted or blocked.
     status: Type.string({ ...isRequired, enum: contactStatus })
   }),
   groups: Type.array(isRequired).of(
-    Type.ref(
-      Type.objectId({
-        ...isRequired,
-        unique: true
-      })
-    ).to('Group', GroupSchema)
+    Type.ref(Type.objectId(isRequired)).to('Group', GroupSchema)
   )
 });
 

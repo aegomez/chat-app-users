@@ -75,7 +75,7 @@ export const userProfileType = new GraphQLObjectType({
   description: 'The user profile and an operation success flag.',
   fields: () => ({
     success: gqlBoolean,
-    data: {
+    profile: {
       type: new GraphQLObjectType({
         name: 'UserProfileData',
         description: 'The user profile complete initial data.',

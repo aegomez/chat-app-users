@@ -23,7 +23,7 @@ export const createGroupResolver: CustomResolver<{
       };
     }
   } catch (e) {
-    console.error('Warning createGroupResolver', e);
+    console.error('Warning createGroupResolver', e.message);
     return {
       success: false,
       groupId: null,
@@ -53,7 +53,7 @@ export const addGroupMemberResolver: UpdateGroupResolver = async (
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning addGroupMemberResolver', e);
+    console.error('Warning addGroupMemberResolver', e.message);
     return { success: false };
   }
 };
@@ -71,7 +71,7 @@ export const deleteGroupMemberResolver: UpdateGroupResolver = async (
       return { success: true };
     }
   } catch (e) {
-    console.error('Warning deleteGroupMemberResolver', e);
+    console.error('Warning deleteGroupMemberResolver', e.message);
     return { success: false };
   }
 };
@@ -92,7 +92,7 @@ export const getGroupMembersResolver: CustomResolver<
       };
     }
   } catch (e) {
-    console.error('Warning deleteGroupMemberResolver', e);
+    console.error('Warning deleteGroupMemberResolver', e.message);
     return {
       success: false,
       members: null
