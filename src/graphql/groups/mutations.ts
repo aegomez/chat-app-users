@@ -13,7 +13,11 @@ import {
 
 export const createMutation: FieldConfig = {
   type: groupResponseType,
-  resolve: createGroupResolver
+  args: {
+    avatar: gqlString,
+    name: gqlString
+  },
+  resolve: createGroupResolver as BaseResolver
 };
 
 export const addMemberMutation: FieldConfig = {

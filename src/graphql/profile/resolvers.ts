@@ -31,8 +31,8 @@ export const userProfileResolver: CustomResolver<{
       publicName,
       userName
     } = await user
-      .populate({ path: 'contacts', populate: { path: 'ref' } })
-      .populate('groups')
+      .populate({ path: 'contacts.ref' })
+      .populate('groups.ref')
       .execPopulate();
     return {
       success: true,

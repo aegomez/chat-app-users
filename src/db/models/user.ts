@@ -52,9 +52,10 @@ export const UserSchema = createSchema({
     // and can be accepted or blocked.
     status: Type.string({ ...isRequired, enum: contactStatus })
   }),
-  groups: Type.array(isRequired).of(
-    Type.ref(Type.objectId(isRequired)).to('Group', GroupSchema)
-  )
+  groups: Type.array(isRequired).of({
+    ref: Type.ref(Type.objectId(isRequired)).to('Group', GroupSchema),
+    joined: Type.number(isRequired)
+  })
 });
 
 export const User = typedModel('User', UserSchema);

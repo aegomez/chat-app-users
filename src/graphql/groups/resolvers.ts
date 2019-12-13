@@ -6,13 +6,20 @@ import {
 } from '../../db/controllers';
 import { CustomResolver } from '../types';
 
-export const createGroupResolver: CustomResolver<{
-  groupId: string | null;
-  conversation: string | null;
-}> = async (_source, _args, context) => {
+export const createGroupResolver: CustomResolver<
+  {
+    groupId: string | null;
+    conversation: string | null;
+  },
+  {
+    avatar: string;
+    name: string;
+  }
+> = async (_source, args, context) => {
   try {
+    const { avatar, name } = args;
     const { _userId } = context;
-    const result = await createNewGroup(_userId);
+    const result = await createNewGroup(name, avatar, _userId);
     if (!result) {
       throw Error('Could not create group.');
     } else {

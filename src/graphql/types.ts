@@ -1,5 +1,6 @@
 import {
   GraphQLBoolean,
+  GraphQLFloat,
   GraphQLInt,
   GraphQLString,
   GraphQLScalarType,
@@ -18,6 +19,7 @@ interface WithSuccess {
 /// ----- Scalar types shorcuts ----- ///
 
 export const gqlBoolean = { type: GraphQLBoolean };
+export const gqlFloat = { type: GraphQLFloat };
 export const gqlInt = { type: GraphQLInt };
 export const gqlString = { type: GraphQLString };
 

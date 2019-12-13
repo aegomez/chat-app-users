@@ -2,6 +2,7 @@ import { GraphQLObjectType, GraphQLList, GraphQLType } from 'graphql';
 
 import {
   gqlBoolean,
+  gqlFloat,
   gqlInt,
   gqlString,
   GqlScalarMap,
@@ -55,14 +56,23 @@ function getUserProfileType(): UserProfileMap {
         new GraphQLObjectType({
           name: 'UserProfileGroups',
           fields: {
-            members: {
+            ref: {
               type: new GraphQLObjectType({
-                name: 'GroupMemberInfo',
-                fields: getPartialUserType
+                name: 'GroupInfo',
+                fields: {
+                  members: {
+                    type: new GraphQLObjectType({
+                      name: 'GroupMemberInfo',
+                      fields: getPartialUserType
+                    })
+                  },
+                  conversation: gqlString,
+                  avatar: gqlString,
+                  name: gqlString
+                }
               })
             },
-            conversation: gqlString,
-            avatar: gqlString
+            joined: gqlFloat
           }
         })
       )

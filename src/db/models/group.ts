@@ -11,6 +11,7 @@ export const GroupSchema = createSchema({
     ).to('User', PartialUserSchema)
   ),
   conversation: Type.string({ required: true }),
+  name: Type.string({ required: true }),
   avatar: Type.string({ required: true })
 });
 

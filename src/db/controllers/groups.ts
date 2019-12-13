@@ -1,18 +1,38 @@
+import 'ts-mongoose/plugin';
+
 import { getUserById } from './profiles';
 import { Group, GroupDoc } from '../models';
+import { createIdenticon } from '../../utils';
 
 export async function createNewGroup(
+  name: string,
+  avatar: string,
   userId: string
 ): Promise<{ id: string; conversation: string } | null> {
   try {
-    /*
-     * Create new conversation
-     */
+    // Create a new icon if value is empty
+    const url = avatar ? avatar : await createIdenticon(name + 'ggg');
+
+    // Find if user exists user profile
+    const user = await getUserById(userId, 'groups');
+    if (!user) throw Error('Could not find user');
+
+    // Create new conversation
     const result = await Group.create({
-      members: [userId]
-      // , conversation
+      members: [userId],
+      conversation: 'not yet',
+      avatar: url,
+      name
     });
     if (!result) throw Error('Group not created');
+
+    // Add group to user profile
+    user.groups.push({
+      ref: result.id,
+      joined: Date.now()
+    });
+    user.save();
+
     return {
       id: result.id,
       conversation: result.conversation
@@ -45,7 +65,10 @@ export async function addMemberToGroup(
     // Save cross-reference
     group.members.push(user._id);
     group.save();
-    user.groups.push(group._id);
+    user.groups.push({
+      ref: group._id,
+      joined: Date.now()
+    });
     user.save();
     return true;
   } catch (e) {
@@ -67,9 +90,13 @@ export async function deleteMemberFromGroup(
     if (user === null) throw Error('Could not fetch user.');
 
     // Search indexes
-    const membersIndex = group.members.findIndex(id => id === user._id);
+    const membersIndex = group.members.findIndex(
+      val => val.toString() === user.id
+    );
     if (membersIndex === -1) throw Error('User not in group.');
-    const groupsIndex = user.groups.findIndex(id => id === group._id);
+    const groupsIndex = user.groups.findIndex(
+      val => val.ref.toString() === group.id
+    );
     if (groupsIndex === -1) throw Error('Group not in user.');
 
     // Remove both references and save the documents
