@@ -64,11 +64,10 @@ export const userGroupsResolver: CustomResolver<{
     const user = await getUserById(_userId, 'groups');
     if (user === null) throw Error('Could not get user');
 
-    const { groups } = await user.populate('groups.ref').execPopulate();
-
-    const groupIds = groups.map(group => {
-      const ref = group.ref as Exclude<typeof group.ref, Types.ObjectId>;
-      return ref._id.toHexString();
+    // Return an array of ids
+    const groupIds = user.groups.map(group => {
+      const ref = group.ref as Types.ObjectId;
+      return ref.toHexString();
     });
 
     return {
