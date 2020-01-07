@@ -2,7 +2,7 @@ import 'ts-mongoose/plugin';
 
 import { getUserById } from './profiles';
 import { Group, GroupDoc } from '../models';
-import { createIdenticon } from '../../utils';
+import { createConversation, createIdenticon } from '../../utils';
 
 export async function createNewGroup(
   name: string,
@@ -18,9 +18,13 @@ export async function createNewGroup(
     if (!user) throw Error('Could not find user');
 
     // Create new conversation
+    const convId = await createConversation();
+    if (!convId) throw Error('Could not create conversation');
+
+    // Create new group
     const result = await Group.create({
       members: [userId],
-      conversation: 'not yet',
+      conversation: convId,
       avatar: url,
       name
     });

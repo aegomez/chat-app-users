@@ -1,5 +1,6 @@
 import { getUserById, getUserByName } from './profiles';
 import { PartialUserProps } from '../models';
+import { createConversation } from '../../utils';
 
 export async function addContact(
   userId: string,
@@ -18,15 +19,14 @@ export async function addContact(
     const added = sender.contacts.some(contact => contact.ref === recipient.id);
     if (added) throw Error('contact already added.');
 
-    /**
-     * createNewConversation()
-     */
+    const convId = await createConversation();
+    if (!convId) throw Error('could not createConversation');
 
     // Add to sender contact list as 'pending'
     sender.contacts.push({
       ref: recipient.id,
       status: 'pending',
-      conversation: undefined
+      conversation: convId
     });
     await sender.save();
 
@@ -34,7 +34,7 @@ export async function addContact(
     recipient.contacts.push({
       ref: sender.id,
       status: 'pending',
-      conversation: undefined
+      conversation: convId
     });
     await recipient.save();
 
