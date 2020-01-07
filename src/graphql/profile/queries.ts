@@ -1,5 +1,9 @@
-import { userProfileType, userGroupsType } from './objectTypes';
-import { userProfileResolver, userGroupsResolver } from './resolvers';
+import { userProfileType, userGroupsType, userListsType } from './objectTypes';
+import {
+  userProfileResolver,
+  userGroupsResolver,
+  userListsResolver
+} from './resolvers';
 import { FieldConfig } from '../types';
 
 export const getUserProfile: FieldConfig = {
@@ -10,4 +14,9 @@ export const getUserProfile: FieldConfig = {
 export const getUserGroups: FieldConfig = {
   type: userGroupsType,
   resolve: userGroupsResolver
+};
+
+export const getUserLists: FieldConfig = {
+  type: userListsType,
+  resolve: userListsResolver
 };

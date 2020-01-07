@@ -12,6 +12,7 @@ const usersQueryRootType = new GraphQLObjectType({
   fields: () => ({
     getUserProfile: Profiles.getUserProfile,
     getUserGroups: Profiles.getUserGroups,
+    getUserLists: Profiles.getUserLists,
     getGroupMembers: getGroupMembersQuery
   })
 });

@@ -51,3 +51,11 @@ export async function getUserByName(
     return await User.findOne({ userName });
   }
 }
+
+export async function getUserLists(
+  userId: string
+): Promise<Pick<UserProps, 'contacts' | 'groups'> | null> {
+  return await User.findById(userId, 'contacts groups')
+    .lean()
+    .exec();
+}

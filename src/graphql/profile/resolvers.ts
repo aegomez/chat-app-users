@@ -1,7 +1,11 @@
 import { Types } from 'mongoose';
 
 import { CustomResolver } from '../types';
-import { getUserById, createUserProfile } from '../../db/controllers';
+import {
+  getUserById,
+  createUserProfile,
+  getUserLists
+} from '../../db/controllers';
 import { UserProps } from '../../db/models';
 
 export const userProfileResolver: CustomResolver<{
@@ -56,6 +60,12 @@ export const userProfileResolver: CustomResolver<{
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractIds(obj: any): string {
+  const ref = obj.ref as Types.ObjectId;
+  return ref.toHexString();
+}
+
 export const userGroupsResolver: CustomResolver<{
   groups: string[] | null;
 }> = async (_source, _args, context) => {
@@ -65,10 +75,7 @@ export const userGroupsResolver: CustomResolver<{
     if (user === null) throw Error('Could not get user');
 
     // Return an array of ids
-    const groupIds = user.groups.map(group => {
-      const ref = group.ref as Types.ObjectId;
-      return ref.toHexString();
-    });
+    const groupIds = user.groups.map(extractIds);
 
     return {
       success: true,
@@ -78,6 +85,30 @@ export const userGroupsResolver: CustomResolver<{
     console.error('Warning userGroupsResolver ', e.message);
     return {
       success: false,
+      groups: null
+    };
+  }
+};
+
+export const userListsResolver: CustomResolver<{
+  contacts: string[] | null;
+  groups: string[] | null;
+}> = async (_source, _args, context) => {
+  try {
+    const { _userId } = context;
+    const user = await getUserLists(_userId);
+    if (user === null) throw Error('Could not get data');
+
+    // Return two arrays of ids
+    const contacts = user.contacts.map(extractIds);
+    const groups = user.groups.map(extractIds);
+
+    return { success: true, contacts, groups };
+  } catch (e) {
+    console.error('Warning userGroupsResolver ', e.message);
+    return {
+      success: false,
+      contacts: null,
       groups: null
     };
   }
