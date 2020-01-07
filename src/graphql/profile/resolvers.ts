@@ -55,3 +55,31 @@ export const userProfileResolver: CustomResolver<{
     };
   }
 };
+
+export const userGroupsResolver: CustomResolver<{
+  groups: string[] | null;
+}> = async (_source, _args, context) => {
+  try {
+    const { _userId } = context;
+    const user = await getUserById(_userId, 'groups');
+    if (user === null) throw Error('Could not get user');
+
+    const { groups } = await user.populate('groups.ref').execPopulate();
+
+    const groupIds = groups.map(group => {
+      const ref = group.ref as Exclude<typeof group.ref, Types.ObjectId>;
+      return ref._id.toHexString();
+    });
+
+    return {
+      success: true,
+      groups: groupIds
+    };
+  } catch (e) {
+    console.error('Warning userGroupsResolver ', e.message);
+    return {
+      success: false,
+      groups: null
+    };
+  }
+};
