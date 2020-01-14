@@ -42,7 +42,9 @@ export async function addContact(
       _id: recipient.id,
       avatar: recipient.avatar,
       connected: recipient.connected,
-      publicName: recipient.publicName
+      lastConnection: recipient.lastConnection,
+      publicName: recipient.publicName,
+      userName: recipient.userName
     };
     // Search if the destinatary exist and add petition
   } catch (e) {
