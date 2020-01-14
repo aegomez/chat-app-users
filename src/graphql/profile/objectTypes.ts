@@ -87,18 +87,6 @@ export const userProfileType = new GraphQLObjectType({
   })
 });
 
-export const userGroupsType = new GraphQLObjectType({
-  name: 'UserGroupsListType',
-  description:
-    'After a get user groups operation, return a success flag and an array of ids, if successful.',
-  fields: () => ({
-    success: gqlBoolean,
-    groups: {
-      type: new GraphQLList(GraphQLString)
-    }
-  })
-});
-
 export const userListsType = new GraphQLObjectType({
   name: 'UserGroupsAndContactsListType',
   description:

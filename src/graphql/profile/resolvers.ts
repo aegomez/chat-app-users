@@ -67,30 +67,6 @@ function extractIds(obj: any): string {
   return ref.toHexString();
 }
 
-export const userGroupsResolver: CustomResolver<{
-  groups: string[] | null;
-}> = async (_source, _args, context) => {
-  try {
-    const { _userId } = context;
-    const user = await getUserById(_userId, 'groups');
-    if (user === null) throw Error('Could not get user');
-
-    // Return an array of ids
-    const groupIds = user.groups.map(extractIds);
-
-    return {
-      success: true,
-      groups: groupIds
-    };
-  } catch (e) {
-    console.error('Warning userGroupsResolver ', e.message);
-    return {
-      success: false,
-      groups: null
-    };
-  }
-};
-
 export const userListsResolver: CustomResolver<{
   contacts: string[] | null;
   groups: string[] | null;
