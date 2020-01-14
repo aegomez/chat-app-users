@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from 'graphql';
 
-import { gqlBoolean, getPartialUserType } from '../types';
+import { gqlBoolean, partialUserProfileType } from '../types';
 
 export const contactResponseType = new GraphQLObjectType({
   name: 'UserContactResponseType',
@@ -9,10 +9,7 @@ export const contactResponseType = new GraphQLObjectType({
   fields: () => ({
     success: gqlBoolean,
     profile: {
-      type: new GraphQLObjectType({
-        name: 'ContactProfileData',
-        fields: getPartialUserType
-      })
+      type: partialUserProfileType
     }
   })
 });

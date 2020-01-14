@@ -8,12 +8,12 @@ import {
 import {
   gqlBoolean,
   gqlFloat,
-  gqlInt,
   gqlString,
   GqlScalarMap,
-  getPartialUserType
+  partialUserProfileType
 } from '../types';
 import { contactStatusEnum } from '../contacts/enums';
+import { groupType } from '../groups/objectTypes';
 import { UserProps } from '../../db/models';
 
 type UserProfileMap = GqlScalarMap<
@@ -29,58 +29,45 @@ type UserProfileMap = GqlScalarMap<
   };
 };
 
+const userProfileContactType = new GraphQLObjectType({
+  name: 'UserProfileContact',
+  description:
+    'The contact partial profile, conversation id, and contact status.',
+  fields: () => ({
+    ref: {
+      type: partialUserProfileType
+    },
+    conversation: gqlString,
+    status: {
+      type: contactStatusEnum
+    }
+  })
+});
+
+const userProfileGroupType = new GraphQLObjectType({
+  name: 'UserProfileGroup',
+  description: 'The group information, and date the user joined.',
+  fields: () => ({
+    ref: {
+      type: groupType
+    },
+    joined: gqlFloat
+  })
+});
+
 function getUserProfileType(): UserProfileMap {
   return {
     avatar: gqlString,
     connected: gqlString,
     language: gqlString,
-    lastConnection: gqlInt,
+    lastConnection: gqlFloat,
     publicName: gqlString,
     userName: gqlString,
     contacts: {
-      type: new GraphQLList(
-        new GraphQLObjectType({
-          name: 'UserProfileContact',
-          fields: {
-            ref: {
-              type: new GraphQLObjectType({
-                name: 'UserContactInfo',
-                fields: getPartialUserType()
-              })
-            },
-            conversation: gqlString,
-            status: {
-              type: contactStatusEnum
-            }
-          }
-        })
-      )
+      type: new GraphQLList(userProfileContactType)
     },
     groups: {
-      type: new GraphQLList(
-        new GraphQLObjectType({
-          name: 'UserProfileGroups',
-          fields: {
-            ref: {
-              type: new GraphQLObjectType({
-                name: 'GroupInfo',
-                fields: {
-                  members: {
-                    type: new GraphQLObjectType({
-                      name: 'GroupMemberInfo',
-                      fields: getPartialUserType
-                    })
-                  },
-                  conversation: gqlString,
-                  avatar: gqlString,
-                  name: gqlString
-                }
-              })
-            },
-            joined: gqlFloat
-          }
-        })
-      )
+      type: new GraphQLList(userProfileGroupType)
     }
   };
 }

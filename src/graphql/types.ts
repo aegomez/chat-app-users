@@ -1,7 +1,6 @@
 import {
   GraphQLBoolean,
   GraphQLFloat,
-  GraphQLInt,
   GraphQLString,
   GraphQLScalarType,
   GraphQLFieldConfig,
@@ -20,7 +19,6 @@ interface WithSuccess {
 
 export const gqlBoolean = { type: GraphQLBoolean };
 export const gqlFloat = { type: GraphQLFloat };
-export const gqlInt = { type: GraphQLInt };
 export const gqlString = { type: GraphQLString };
 
 /// ----- Common types and mappers ----- ///
@@ -75,21 +73,28 @@ export type CustomResolver<RT = {}, TArgs = {}> = (
 // single string input parameter.
 export type InputResolver = CustomResolver<{}, { input: string }>;
 
-type PartialUserMap = GqlScalarMap<PartialUserProps>;
 /**
  * Get a partial user profile.
  * Used in nested profile operations.
  */
-export function getPartialUserType(): PartialUserMap {
+function getPartialUserType(): GqlScalarMap<PartialUserProps> {
   return {
     _id: gqlString,
     avatar: gqlString,
     connected: gqlBoolean,
-    publicName: gqlString
+    lastConnection: gqlFloat,
+    publicName: gqlString,
+    userName: gqlString
   };
 }
 
 /// ----- Common ObjectTypes ----- ///
+
+export const partialUserProfileType = new GraphQLObjectType({
+  name: 'PartialUserProfile',
+  description: 'Selected user properties visible to contacts and groups.',
+  fields: getPartialUserType
+});
 
 export const successResponseType = new GraphQLObjectType({
   name: 'SuccessResponseType',

@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLList, GraphQLString } from 'graphql';
 
-import { gqlBoolean, gqlString } from '../types';
+import { gqlBoolean, gqlString, partialUserProfileType } from '../types';
 
 export const groupResponseType = new GraphQLObjectType({
   name: 'CreateGroupResponseType',
@@ -22,5 +22,20 @@ export const groupMembersType = new GraphQLObjectType({
     members: {
       type: new GraphQLList(GraphQLString)
     }
+  })
+});
+
+// The full group model type
+export const groupType = new GraphQLObjectType({
+  name: 'GroupInfo',
+  description: 'The groups members, conversation id, group name and avatar.',
+  fields: () => ({
+    members: {
+      type: new GraphQLList(partialUserProfileType)
+    },
+    _id: gqlString,
+    conversation: gqlString,
+    name: gqlString,
+    avatar: gqlString
   })
 });
