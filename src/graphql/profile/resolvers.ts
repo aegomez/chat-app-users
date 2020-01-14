@@ -9,7 +9,7 @@ import {
 import { UserProps } from '../../db/models';
 
 export const userProfileResolver: CustomResolver<{
-  profile: Omit<UserProps, '_id' | '__v'> | null;
+  profile: Omit<UserProps, '__v'> | null;
 }> = async (_source, _args, context) => {
   const { _userId, _userName } = context;
 
@@ -26,6 +26,7 @@ export const userProfileResolver: CustomResolver<{
     }
     // If user is authorized and already has profile data
     const {
+      _id,
       avatar,
       connected,
       contacts,
@@ -42,6 +43,7 @@ export const userProfileResolver: CustomResolver<{
     return {
       success: true,
       profile: {
+        _id,
         avatar,
         connected,
         contacts,

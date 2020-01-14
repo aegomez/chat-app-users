@@ -1,6 +1,7 @@
 import {
   GraphQLBoolean,
   GraphQLFloat,
+  GraphQLID,
   GraphQLString,
   GraphQLScalarType,
   GraphQLFieldConfig,
@@ -19,6 +20,7 @@ interface WithSuccess {
 
 export const gqlBoolean = { type: GraphQLBoolean };
 export const gqlFloat = { type: GraphQLFloat };
+export const gqlID = { type: GraphQLID };
 export const gqlString = { type: GraphQLString };
 
 /// ----- Common types and mappers ----- ///

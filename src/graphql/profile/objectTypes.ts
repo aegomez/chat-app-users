@@ -8,6 +8,7 @@ import {
 import {
   gqlBoolean,
   gqlFloat,
+  gqlID,
   gqlString,
   GqlScalarMap,
   partialUserProfileType
@@ -17,7 +18,7 @@ import { groupType } from '../groups/objectTypes';
 import { UserProps } from '../../db/models';
 
 type UserProfileMap = GqlScalarMap<
-  Omit<UserProps, '_id' | '__v' | 'contacts' | 'groups'>
+  Omit<UserProps, '__v' | 'contacts' | 'groups'>
 > & {
   // keeping it simple atm because nested
   // objects are a mess, not worth it
@@ -57,6 +58,7 @@ const userProfileGroupType = new GraphQLObjectType({
 
 function getUserProfileType(): UserProfileMap {
   return {
+    _id: gqlID,
     avatar: gqlString,
     connected: gqlString,
     language: gqlString,
