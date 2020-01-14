@@ -1,5 +1,6 @@
 import {
   changeUserAvatar,
+  changeUserConnectedStatus,
   changeUserLanguage,
   changeUserPublicName
 } from '../../db/controllers';
@@ -21,6 +22,25 @@ export const updateAvatarResolver: InputResolver = async (
     }
   } catch (e) {
     console.error('Warning updateAvatarResolver: ', e.message);
+    return { success: false };
+  }
+};
+
+export const updateConnectedResolver: CustomResolver<
+  {},
+  { status: boolean }
+> = async (_source, args, context) => {
+  try {
+    const { _userId } = context;
+    const { status } = args;
+    const result = await changeUserConnectedStatus(_userId, status);
+    if (!result) {
+      throw Error('avatar value could not be updated.');
+    } else {
+      return { success: true };
+    }
+  } catch (e) {
+    console.error('Warning updateConnectedResolver:', e.message);
     return { success: false };
   }
 };

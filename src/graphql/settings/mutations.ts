@@ -1,12 +1,14 @@
 import { userLanguageEnum } from './enums';
 import {
   updateAvatarResolver,
+  updateConnectedResolver,
   updateLanguageResolver,
   updatePublicNameResolver
 } from './resolvers';
 import {
   BaseResolver,
   FieldConfig,
+  gqlBoolean,
   gqlString,
   successResponseType
 } from '../types';
@@ -17,6 +19,14 @@ export const updateAvatarMutation: FieldConfig = {
     input: gqlString
   },
   resolve: updateAvatarResolver as BaseResolver
+};
+
+export const updateConnectedMutation: FieldConfig = {
+  type: successResponseType,
+  args: {
+    status: gqlBoolean
+  },
+  resolve: updateConnectedResolver as BaseResolver
 };
 
 export const updateLanguageMutation: FieldConfig = {

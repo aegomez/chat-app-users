@@ -29,6 +29,7 @@ const usersMutationRootType = new GraphQLObjectType({
     deleteGroupMember: Groups.deleteMemberMutation,
 
     updateUserAvatar: Settings.updateAvatarMutation,
+    updateUserConnected: Settings.updateConnectedMutation,
     updateUserLanguage: Settings.updateLanguageMutation,
     updateUserPublicName: Settings.updatePublicNameMutation
   })
