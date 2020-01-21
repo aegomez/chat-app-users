@@ -56,6 +56,10 @@ export const validateCookies: AsyncMiddleware<void> = async (
     }
   } catch (e) {
     console.error('Error validateCookies: ', e.message);
+    res.cookie('token', 'EXPIRED', {
+      httpOnly: true,
+      maxAge: 0
+    });
     res.status(200).send({
       data: { error: 'NOT_AUTHORIZED' }
     });
