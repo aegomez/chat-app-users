@@ -1,4 +1,4 @@
-import { groupResponseType } from './objectTypes';
+import { groupResponseType, addGroupMemberType } from './objectTypes';
 import {
   createGroupResolver,
   addGroupMemberResolver,
@@ -21,7 +21,7 @@ export const createMutation: FieldConfig = {
 };
 
 export const addMemberMutation: FieldConfig = {
-  type: successResponseType,
+  type: addGroupMemberType,
   args: {
     groupId: gqlString,
     userId: gqlString

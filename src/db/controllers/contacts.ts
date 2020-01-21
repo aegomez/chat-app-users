@@ -5,18 +5,27 @@ import { createConversation } from '../../utils';
 export async function addContact(
   userId: string,
   contactName: string
-): Promise<PartialUserProps | null> {
+): Promise<{
+  profile: PartialUserProps;
+  conversation: string;
+} | null> {
   try {
     // Get sender
-    const sender = await getUserById(userId, 'contacts');
+    const sender = await getUserById(userId, 'contacts userName');
     if (sender === null) throw Error('sender not found.');
+
+    // Return if contactName is the same as the user name
+    if (sender.userName === contactName)
+      throw Error('user cannot be added as their own contact!');
 
     // Check if recipient exists
     const recipient = await getUserByName(contactName);
     if (recipient === null) throw Error('recipient not found.');
 
     // Return if the recipient is already in contacts
-    const added = sender.contacts.some(contact => contact.ref === recipient.id);
+    const added = sender.contacts.some(
+      contact => contact.ref.toString() === recipient.id
+    );
     if (added) throw Error('contact already added.');
 
     const convId = await createConversation();
@@ -39,12 +48,15 @@ export async function addContact(
     await recipient.save();
 
     return {
-      _id: recipient.id,
-      avatar: recipient.avatar,
-      connected: recipient.connected,
-      lastConnection: recipient.lastConnection,
-      publicName: recipient.publicName,
-      userName: recipient.userName
+      profile: {
+        _id: recipient.id,
+        avatar: recipient.avatar,
+        connected: recipient.connected,
+        lastConnection: recipient.lastConnection,
+        publicName: recipient.publicName,
+        userName: recipient.userName
+      },
+      conversation: convId
     };
     // Search if the destinatary exist and add petition
   } catch (e) {
@@ -88,7 +100,6 @@ export async function deleteContact(
     // Get user
     const user = await getUserById(userId, 'contacts');
     if (user === null) throw Error('Could not fetch user.');
-    console.log(user);
 
     // Look for contact
     const index = user.contacts.findIndex(

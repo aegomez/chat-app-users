@@ -1,7 +1,7 @@
 import 'ts-mongoose/plugin';
 
 import { getUserById } from './profiles';
-import { Group, GroupDoc } from '../models';
+import { Group, GroupDoc, PartialUserProps } from '../models';
 import { createConversation, createIdenticon } from '../../utils';
 
 export async function createNewGroup(
@@ -54,13 +54,13 @@ async function getGroupById(groupId: string): Promise<GroupDoc | null> {
 export async function addMemberToGroup(
   groupId: string,
   userId: string
-): Promise<boolean> {
+): Promise<PartialUserProps | null> {
   try {
     // Get the group document
     const group = await getGroupById(groupId);
     if (group === null) throw Error('Could not fetch group.');
     // Get user document
-    const user = await getUserById(userId, 'groups');
+    const user = await getUserById(userId, '-contacts');
     if (user === null) throw Error('Could not fetch user.');
 
     // Check if user is already in group
@@ -74,10 +74,10 @@ export async function addMemberToGroup(
       joined: Date.now()
     });
     user.save();
-    return true;
+    return user.toObject();
   } catch (e) {
     console.error('Warning addMemberToGroup', e.message);
-    return false;
+    return null;
   }
 }
 

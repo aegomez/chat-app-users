@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLList, GraphQLString } from 'graphql';
 
-import { gqlBoolean, gqlString, partialUserProfileType } from '../types';
+import { gqlBoolean, gqlID, gqlString, partialUserProfileType } from '../types';
 
 export const groupResponseType = new GraphQLObjectType({
   name: 'CreateGroupResponseType',
@@ -8,7 +8,7 @@ export const groupResponseType = new GraphQLObjectType({
     'After a create group operation, return a success flag and, if successfull, the group and conversation ids.',
   fields: () => ({
     success: gqlBoolean,
-    groupId: gqlString,
+    _id: gqlID,
     conversation: gqlString
   })
 });
@@ -33,9 +33,19 @@ export const groupType = new GraphQLObjectType({
     members: {
       type: new GraphQLList(partialUserProfileType)
     },
-    _id: gqlString,
+    _id: gqlID,
     conversation: gqlString,
     name: gqlString,
     avatar: gqlString
+  })
+});
+
+export const addGroupMemberType = new GraphQLObjectType({
+  name: 'NewGroupMemberType',
+  description:
+    'After adding a new group member, return a success flag and their partial profile.',
+  fields: () => ({
+    success: gqlBoolean,
+    newMember: { type: partialUserProfileType }
   })
 });

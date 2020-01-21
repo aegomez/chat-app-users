@@ -4,11 +4,12 @@ import {
   deleteMemberFromGroup,
   getGroupMembers
 } from '../../db/controllers';
+import { PartialUserProps } from '../../db/models';
 import { CustomResolver } from '../types';
 
 export const createGroupResolver: CustomResolver<
   {
-    groupId: string | null;
+    _id: string | null;
     conversation: string | null;
   },
   {
@@ -25,7 +26,7 @@ export const createGroupResolver: CustomResolver<
     } else {
       return {
         success: true,
-        groupId: result.id,
+        _id: result.id,
         conversation: result.conversation
       };
     }
@@ -33,42 +34,40 @@ export const createGroupResolver: CustomResolver<
     console.error('Warning createGroupResolver', e.message);
     return {
       success: false,
-      groupId: null,
+      _id: null,
       conversation: null
     };
   }
 };
 
-type UpdateGroupResolver = CustomResolver<
-  {},
-  {
-    groupId: string;
-    userId: string;
-  }
->;
-
-export const addGroupMemberResolver: UpdateGroupResolver = async (
-  _source,
-  args
-) => {
+export const addGroupMemberResolver: CustomResolver<
+  { newMember: PartialUserProps | null },
+  { groupId: string; userId: string }
+> = async (_source, args) => {
   try {
     const { groupId, userId } = args;
     const result = await addMemberToGroup(groupId, userId);
     if (!result) {
       throw Error('Could not add group member.');
     } else {
-      return { success: true };
+      return {
+        success: true,
+        newMember: result
+      };
     }
   } catch (e) {
     console.error('Warning addGroupMemberResolver', e.message);
-    return { success: false };
+    return {
+      success: false,
+      newMember: null
+    };
   }
 };
 
-export const deleteGroupMemberResolver: UpdateGroupResolver = async (
-  _source,
-  args
-) => {
+export const deleteGroupMemberResolver: CustomResolver<
+  {},
+  { groupId: string; userId: string }
+> = async (_source, args) => {
   try {
     const { groupId, userId } = args;
     const result = await deleteMemberFromGroup(groupId, userId);

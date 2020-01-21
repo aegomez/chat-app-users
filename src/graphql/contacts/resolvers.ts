@@ -7,7 +7,7 @@ import {
 import { CustomResolver, InputResolver } from '../types';
 
 export const addContactResolver: CustomResolver<
-  { profile: PartialUserProps | null },
+  { profile: PartialUserProps | null; conversation: string | null },
   { contactName: string }
 > = async (_source, args, context) => {
   try {
@@ -24,14 +24,16 @@ export const addContactResolver: CustomResolver<
     } else {
       return {
         success: true,
-        profile: contact
+        profile: contact.profile,
+        conversation: contact.conversation
       };
     }
   } catch (e) {
     console.error('Warning addContactResolver: ', e.message);
     return {
       success: false,
-      profile: null
+      profile: null,
+      conversation: null
     };
   }
 };
