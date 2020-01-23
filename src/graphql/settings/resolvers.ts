@@ -13,7 +13,10 @@ export const updateAvatarResolver: InputResolver = async (
 ) => {
   try {
     const { _userId } = context;
-    const url = args.input;
+    const url = '' + args.input;
+    if (!url.length || url.length > 2000) {
+      throw Error('url is too long/short!');
+    }
     const result = await changeUserAvatar(_userId, url);
     if (!result) {
       throw Error('avatar value could not be updated.');
@@ -70,7 +73,10 @@ export const updatePublicNameResolver: InputResolver = async (
 ) => {
   try {
     const { _userId } = context;
-    const newName = args.input;
+    const newName = '' + args.input;
+    if (newName.length < 1 || newName.length > 60) {
+      throw Error('name is too long/short!');
+    }
     const result = await changeUserPublicName(_userId, newName);
     if (!result) {
       throw Error('publicName value could not be updated.');
