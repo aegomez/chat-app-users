@@ -9,7 +9,7 @@ import {
 import { GroupSchema } from './group';
 
 const isRequired = { required: true as const };
-const locales = ['en', 'es', 'pt'] as const;
+const locales = ['auto', 'en', 'es', 'pt'] as const;
 const contactStatus = ['accepted', 'blocked', 'pending'] as const;
 
 // This schema contains only a part of the
