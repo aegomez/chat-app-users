@@ -34,14 +34,16 @@ export const updateConnectedResolver: CustomResolver<
   { status: boolean }
 > = async (_source, args, context) => {
   try {
-    const { _userId } = context;
+    const { _userId, res } = context;
     const { status } = args;
     const result = await changeUserConnectedStatus(_userId, status);
     if (!result) {
       throw Error('avatar value could not be updated.');
-    } else {
-      return { success: true };
     }
+    if (!status) {
+      res?.clearCookie('token');
+    }
+    return { success: true };
   } catch (e) {
     console.error('Warning updateConnectedResolver:', e.message);
     return { success: false };
