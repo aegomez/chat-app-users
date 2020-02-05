@@ -1,14 +1,10 @@
 import { getUserById, getUserByName } from './profiles';
-import { PartialUserProps } from '../models';
 import { createConversation } from '../../utils';
 
 export async function addContact(
   userId: string,
   contactName: string
-): Promise<{
-  profile: PartialUserProps;
-  conversation: string;
-} | null> {
+): Promise<boolean> {
   try {
     // Get sender
     const sender = await getUserById(userId, 'contacts userName');
@@ -23,21 +19,24 @@ export async function addContact(
     if (recipient === null) throw Error('recipient not found.');
 
     // Return if the recipient is already in contacts
-    const added = sender.contacts.some(
+    let added = sender.contacts.some(
       contact => contact.ref.toString() === recipient.id
     );
     if (added) throw Error('contact already added.');
 
+    // Retun if the sender is already in
+    // the recipient contacts
+    added = recipient.contacts.some(
+      contact => contact.ref.toString() === sender.id
+    );
+    if (added) throw Error('contact is pending to be accepted.');
+
     const convId = await createConversation();
     if (!convId) throw Error('could not createConversation');
 
-    // Add to sender contact list as 'pending'
-    sender.contacts.push({
-      ref: recipient.id,
-      status: 'pending',
-      conversation: convId
-    });
-    await sender.save();
+    // The contact is not added to the
+    // sender's list until the recipient
+    // accepts the request.
 
     // Add to recipient contact list as 'pending'
     recipient.contacts.push({
@@ -45,23 +44,13 @@ export async function addContact(
       status: 'pending',
       conversation: convId
     });
-    await recipient.save();
+    const saved = await recipient.save();
 
-    return {
-      profile: {
-        _id: recipient.id,
-        avatar: recipient.avatar,
-        connected: recipient.connected,
-        lastConnection: recipient.lastConnection,
-        publicName: recipient.publicName,
-        userName: recipient.userName
-      },
-      conversation: convId
-    };
+    return !!saved;
     // Search if the destinatary exist and add petition
   } catch (e) {
     console.error('addContact: ', e.message);
-    return null;
+    return false;
   }
 }
 
@@ -81,9 +70,32 @@ export async function changeContactStatus(
     );
     if (index === -1) throw Error('Contact not in list.');
 
-    // Modify contact status
-    user.contacts[index].status = status;
-    const saved = await user.save();
+    const userContact = user.contacts[index];
+
+    // Return if new and old status are the same
+    if (userContact.status === status) {
+      return true;
+    }
+
+    // Check if contact exist
+    const contactDoc = await getUserById(contactId, 'contacts');
+    if (!contactDoc) throw Error('Could not fetch contact.');
+
+    // Modify contact status for the user
+    userContact.status = status;
+    await user.save();
+
+    // If the new status is `accepted`, add
+    // to the original sender's contact list
+    if (status !== 'accepted') {
+      return true;
+    }
+    contactDoc.contacts.push({
+      ref: user.id,
+      status: 'accepted',
+      conversation: userContact.conversation
+    });
+    const saved = await contactDoc.save();
 
     return saved !== null;
   } catch (e) {

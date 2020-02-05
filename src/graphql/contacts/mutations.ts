@@ -1,5 +1,4 @@
 import { contactStatusEnum } from './enums';
-import { contactResponseType } from './objectTypes';
 import {
   addContactResolver,
   updateContactResolver,
@@ -13,7 +12,7 @@ import {
 } from '../types';
 
 export const addMutation: FieldConfig = {
-  type: contactResponseType,
+  type: successResponseType,
   args: {
     contactName: gqlString
   },

@@ -1,4 +1,3 @@
-import { PartialUserProps } from '../../db/models';
 import {
   addContact,
   changeContactStatus,
@@ -7,7 +6,7 @@ import {
 import { CustomResolver, InputResolver } from '../types';
 
 export const addContactResolver: CustomResolver<
-  { profile: PartialUserProps | null; conversation: string | null },
+  {},
   { contactName: string }
 > = async (_source, args, context) => {
   try {
@@ -19,21 +18,17 @@ export const addContactResolver: CustomResolver<
     }
 
     const contact = await addContact(_userId, contactName);
-    if (contact === null) {
+    if (!contact) {
       throw Error('contact could not be added');
     } else {
       return {
-        success: true,
-        profile: contact.profile,
-        conversation: contact.conversation
+        success: true
       };
     }
   } catch (e) {
     console.error('Warning addContactResolver: ', e.message);
     return {
-      success: false,
-      profile: null,
-      conversation: null
+      success: false
     };
   }
 };
