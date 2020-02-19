@@ -25,6 +25,12 @@ export const userProfileResolver: CustomResolver<{
       if (user === null) throw Error('Could not create profile');
     }
     // If user is authorized and already has profile data
+
+    // Set user as connected
+    user.connected = true;
+    await user.save();
+
+    // Get populated profile and return it
     const {
       _id,
       avatar,

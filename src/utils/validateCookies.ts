@@ -3,6 +3,7 @@ import { parse } from 'cookie';
 import { request } from 'graphql-request';
 
 import { AsyncMiddleware, VerifyResponse } from './types';
+import { changeUserConnectedStatus } from '../db/controllers';
 
 const verifyTokenQuery = /* GraphQL */ `
   query verifyToken($token: String) {
@@ -47,6 +48,7 @@ export const validateCookies: AsyncMiddleware<void> = async (
     // If response is ok...
     if (auth.valid === false) {
       // ...but token is not valid
+      await changeUserConnectedStatus(auth._userId, false);
       throw Error('Token not valid.');
     } else {
       // ...and token is valid

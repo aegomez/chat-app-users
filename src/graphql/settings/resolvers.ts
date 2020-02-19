@@ -38,7 +38,7 @@ export const updateConnectedResolver: CustomResolver<
     const { status } = args;
     const result = await changeUserConnectedStatus(_userId, status);
     if (!result) {
-      throw Error('avatar value could not be updated.');
+      throw Error('connected value could not be updated.');
     }
     if (!status) {
       res?.clearCookie('token');
