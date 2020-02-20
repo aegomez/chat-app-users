@@ -14,17 +14,12 @@ const app = express();
 // express middleware
 app.use(express.json());
 app.use(compression());
-app.use(morgan('dev'));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
 
 // custom middleware
 app.use(asyncMiddleware(validateCookies));
-
-// connect to database
-connect()
-  .then(() => console.log('Succesfully connected to DB.'))
-  .catch(error => {
-    console.error('Could not connect to database', error.message);
-  });
 
 // GraphQL route
 app.use(
@@ -35,6 +30,13 @@ app.use(
   }))
 );
 
-app.listen(PORT, () => {
-  console.log(`Server up and running on port ${PORT}.`);
-});
+// connect to database
+connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server up and running on port ${PORT}.`);
+    });
+  })
+  .catch(() => {
+    console.error('Connect to DB failed after retries.');
+  });
