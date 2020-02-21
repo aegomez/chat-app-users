@@ -1,6 +1,6 @@
 {
   "name": "chat-app-users",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "The user profiles service for the chat application.",
   "repository": "https://github.com/aegomez/chat-app-users.git",
   "author": "Adrian Gomez",

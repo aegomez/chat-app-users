@@ -7,6 +7,7 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 COPY build build/
+COPY --chown=node temp temp/
 
 RUN yarn install
 
